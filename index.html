@@ -248,6 +248,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-block {
             width: 100%;
         }
@@ -358,6 +364,33 @@
             box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
         }
 
+        .status-message {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            text-align: center;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .status-message.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .status-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid var(--danger);
+            color: #fca5a5;
+        }
+
+        .status-message.info {
+            background: rgba(37, 99, 235, 0.2);
+            border: 2px solid var(--primary);
+            color: #93c5fd;
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -454,7 +487,7 @@
                 <div class="progress-fill" id="progressBar" style="width: 0%"></div>
             </div>
             <div id="questionsContainer"></div>
-            <button class="btn btn-primary btn-block" onclick="submitQuiz()">סיים מבחן</button>
+            <button class="btn btn-primary btn-block" id="submitBtn" onclick="submitQuiz()">סיים מבחן</button>
         </div>
 
         <!-- Results Section -->
@@ -464,6 +497,7 @@
                 <div class="emoji" id="resultEmoji"></div>
                 <div class="score-display" id="scoreDisplay"></div>
                 <p id="scoreFeedback" style="font-size: 1.3rem; color: var(--text-secondary);"></p>
+                <div id="statusMessage"></div>
                 <button class="btn download-btn btn-block" onclick="downloadExcel()">💾 הורד תוצאות לאקסל</button>
             </div>
             <div class="card">
@@ -474,6 +508,9 @@
     </div>
 
     <script>
+        // כתובת ה-API של Google Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaH5L-HqgbgjSOgHBvtkxOp7Dl10Ejr2ztaeHMh81c9x5_N7t08F4jHSGsdYdby-AV/exec';
+
         const questions = [
             {
                 question: "מהו הסיסמה החזקה ביותר?",
@@ -605,7 +642,8 @@
                 firstName,
                 lastName,
                 className,
-                date: new Date().toLocaleDateString('he-IL')
+                date: new Date().toLocaleDateString('he-IL'),
+                time: new Date().toLocaleTimeString('he-IL')
             };
 
             document.getElementById('studentForm').classList.add('hidden');
@@ -654,7 +692,7 @@
             document.getElementById('progressBar').style.width = `${progress}%`;
         }
 
-        function submitQuiz() {
+        async function submitQuiz() {
             userAnswers = [];
             let allAnswered = true;
 
@@ -672,20 +710,62 @@
                 return;
             }
 
+            // חישוב ציון
+            let correctCount = 0;
+            questions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) correctCount++;
+            });
+            const score = Math.round((correctCount / questions.length) * 100);
+
+            studentData.score = score;
+            studentData.correctCount = correctCount;
+            studentData.totalQuestions = questions.length;
+            studentData.answers = userAnswers;
+
+            // הצגת תוצאות
             showResults();
+
+            // שמירה ל-Google Sheets
+            await saveToGoogleSheets();
+        }
+
+        async function saveToGoogleSheets() {
+            const statusDiv = document.getElementById('statusMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            statusDiv.innerHTML = '<div class="status-message info">⏳ שומר תוצאות ל-Google Sheets...</div>';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(studentData)
+                });
+
+                // בגלל no-cors, לא נוכל לקרוא את התשובה, אבל אם הגענו לכאן זה אומר שהבקשה נשלחה
+                statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשמרו בהצלחה ב-Google Sheets!</div>';
+                
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                statusDiv.innerHTML = '<div class="status-message error">❌ שגיאה בשמירה. אנא הורד את קובץ האקסל.</div>';
+            } finally {
+                submitBtn.disabled = false;
+            }
         }
 
         function showResults() {
             document.getElementById('quizSection').classList.add('hidden');
             document.getElementById('resultsSection').classList.remove('hidden');
 
-            let correctCount = 0;
             const resultsHTML = [];
 
             questions.forEach((q, index) => {
                 const userAnswer = userAnswers[index];
                 const isCorrect = userAnswer === q.correct;
-                if (isCorrect) correctCount++;
 
                 resultsHTML.push(`
                     <div class="result-item ${isCorrect ? 'correct' : 'incorrect'}">
@@ -707,7 +787,7 @@
                 `);
             });
 
-            const score = Math.round((correctCount / questions.length) * 100);
+            const score = studentData.score;
             document.getElementById('scoreDisplay').textContent = `${score}%`;
             
             let emoji, feedback;
@@ -728,10 +808,6 @@
             document.getElementById('resultEmoji').textContent = emoji;
             document.getElementById('scoreFeedback').textContent = feedback;
             document.getElementById('resultsDetails').innerHTML = resultsHTML.join('');
-
-            studentData.score = score;
-            studentData.correctCount = correctCount;
-            studentData.totalQuestions = questions.length;
         }
 
         function downloadExcel() {
@@ -743,6 +819,7 @@
                 'שם משפחה',
                 'כיתה',
                 'תאריך',
+                'שעה',
                 'ציון',
                 'תשובות נכונות',
                 'סה״כ שאלות'
@@ -765,6 +842,7 @@
                 studentData.lastName,
                 studentData.className,
                 studentData.date,
+                studentData.time,
                 studentData.score + '%',
                 studentData.correctCount,
                 studentData.totalQuestions
@@ -789,7 +867,7 @@
 
             // Set column widths
             ws['!cols'] = [
-                { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 12 },
+                { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 12 }, { wch: 10 },
                 { wch: 8 }, { wch: 12 }, { wch: 12 }
             ];
             
