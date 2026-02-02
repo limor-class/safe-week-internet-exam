@@ -737,21 +737,31 @@
             submitBtn.disabled = true;
 
             try {
+                console.log('Sending data to Google Sheets:', studentData);
+                
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'text/plain',
                     },
                     body: JSON.stringify(studentData)
                 });
 
-                // בגלל no-cors, לא נוכל לקרוא את התשובה, אבל אם הגענו לכאן זה אומר שהבקשה נשלחה
-                statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשמרו בהצלחה ב-Google Sheets!</div>';
+                console.log('Response received:', response);
+                
+                // ניסיון לקרוא את התשובה
+                try {
+                    const result = await response.text();
+                    console.log('Response text:', result);
+                    statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשמרו בהצלחה ב-Google Sheets!</div>';
+                } catch (e) {
+                    // אם לא הצלחנו לקרוא תשובה, זה בסדר - הנתונים כנראה נשלחו
+                    statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשלחו (ייתכן שנשמרו).<br/>אנא בדקי בגיליון Google Sheets.</div>';
+                }
                 
             } catch (error) {
                 console.error('Error saving to Google Sheets:', error);
-                statusDiv.innerHTML = '<div class="status-message error">❌ שגיאה בשמירה. אנא הורד את קובץ האקסל.</div>';
+                statusDiv.innerHTML = '<div class="status-message error">❌ שגיאה בשמירה: ' + error.message + '<br/>אנא הורד את קובץ האקסל.</div>';
             } finally {
                 submitBtn.disabled = false;
             }
