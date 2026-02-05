@@ -3,900 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מבחן גלישה בטוחה ברשת</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <title>מבחן שבוע אינטרנט בטוח</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --secondary: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg-main: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --primary-color: #008069; /* WhatsApp Green */
+            --bg-color: #e5ddd5;
+            --chat-bg: #ffffff;
+            --user-msg-bg: #dcf8c6;
         }
 
         body {
-            font-family: 'Assistant', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            height: 100vh;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: #efe7dd;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
-            z-index: 1;
         }
 
         .header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.8s ease-out;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+            z-index: 10;
         }
 
         .header h1 {
-            font-family: 'Rubik', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px rgba(96, 165, 250, 0.3);
-        }
-
-        .header p {
+            margin: 0;
             font-size: 1.2rem;
-            color: var(--text-secondary);
-            font-weight: 400;
+            flex-grow: 1;
         }
 
-        .card {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 60px var(--shadow);
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
-            border-color: var(--primary);
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 15px 20px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            background: var(--bg-main);
-            color: var(--text-primary);
-            font-size: 1rem;
-            font-family: 'Assistant', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .question-card {
-            margin-bottom: 30px;
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .question-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .question-number {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.3rem;
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
-        }
-
-        .question-text {
-            font-size: 1.3rem;
-            font-weight: 600;
+        .chat-area {
             flex: 1;
-            line-height: 1.6;
-        }
-
-        .answers {
-            display: grid;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .answer-option {
-            position: relative;
-        }
-
-        .answer-option input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .answer-label {
-            display: flex;
-            align-items: center;
-            padding: 18px 24px;
-            background: var(--bg-main);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.05rem;
-            line-height: 1.6;
-        }
-
-        .answer-label:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--primary);
-            transform: translateX(-5px);
-        }
-
-        .answer-option input[type="radio"]:checked + .answer-label {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.2) 0%, rgba(37, 99, 235, 0.1) 100%);
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .answer-label::before {
-            content: '';
-            width: 24px;
-            height: 24px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            margin-left: 15px;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            background: var(--bg-card);
-        }
-
-        .answer-option input[type="radio"]:checked + .answer-label::before {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: inset 0 0 0 4px var(--bg-card);
-        }
-
-        .btn {
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Rubik', sans-serif;
-            box-shadow: 0 10px 30px var(--shadow);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        .results-card {
-            text-align: center;
-        }
-
-        .score-display {
-            font-size: 5rem;
-            font-weight: 800;
-            margin: 30px 0;
-            background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: scaleIn 0.6s ease-out;
-        }
-
-        .results-details {
-            margin-top: 40px;
-            text-align: right;
-        }
-
-        .result-item {
-            background: var(--bg-main);
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-right: 4px solid var(--border);
-            animation: fadeInRight 0.5s ease-out;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .result-item.correct {
-            border-right-color: var(--secondary);
-            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-main) 100%);
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            position: relative;
+            line-height: 1.4;
+            font-size: 15px;
+            animation: fadeIn 0.3s ease;
         }
 
-        .result-item.incorrect {
-            border-right-color: var(--danger);
-            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1) 0%, var(--bg-main) 100%);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .result-question {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            color: var(--text-primary);
+        .bot-message {
+            background-color: var(--chat-bg);
+            align-self: flex-start;
+            border-top-right-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
         }
 
-        .result-answer {
-            margin: 8px 0;
+        .user-message {
+            background-color: var(--user-msg-bg);
+            align-self: flex-end;
+            border-top-left-radius: 0;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .input-area {
             padding: 10px;
-            border-radius: 8px;
-            font-size: 1rem;
+            background-color: #f0f0f0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
-        .your-answer {
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--text-secondary);
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
         }
 
-        .correct-answer {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--secondary);
-            font-weight: 600;
-        }
-
-        .explanation {
-            margin-top: 12px;
-            padding: 15px;
-            background: rgba(245, 158, 11, 0.1);
-            border-radius: 8px;
-            color: var(--text-secondary);
-            border-right: 3px solid var(--warning);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: var(--bg-main);
-            border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-            transition: width 0.5s ease;
-            border-radius: 10px;
-        }
-
-        .download-btn {
-            margin-top: 30px;
-            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+        button {
+            background-color: var(--primary-color);
             color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
         }
 
-        .download-btn:hover {
-            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+        button:hover {
+            background-color: #006653;
         }
 
-        .status-message {
-            margin-top: 20px;
-            padding: 15px 20px;
-            border-radius: 12px;
-            font-size: 1rem;
-            text-align: center;
-            animation: fadeInUp 0.5s ease-out;
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
         }
 
-        .status-message.success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 2px solid var(--secondary);
-            color: var(--secondary);
-        }
-
-        .status-message.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 2px solid var(--danger);
-            color: #fca5a5;
-        }
-
-        .status-message.info {
-            background: rgba(37, 99, 235, 0.2);
-            border: 2px solid var(--primary);
-            color: #93c5fd;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .emoji {
-            font-size: 4rem;
-            margin: 20px 0;
-            animation: scaleIn 0.6s ease-out 0.3s both;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-
-            .card {
-                padding: 25px;
-            }
-
-            .score-display {
-                font-size: 3.5rem;
-            }
+        .option-btn {
+            background-color: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔐 מבחן גלישה בטוחה</h1>
-            <p>בדוק את הידע שלך בנושא אבטחת מידע וגלישה בטוחה ברשת</p>
-        </div>
 
-        <!-- Student Info Form -->
-        <div id="studentForm" class="card">
-            <h2 style="margin-bottom: 30px; font-size: 2rem; font-weight: 700;">פרטי התלמיד</h2>
-            <div class="form-group">
-                <label for="firstName">שם פרטי:</label>
-                <input type="text" id="firstName" required placeholder="הכנס שם פרטי">
-            </div>
-            <div class="form-group">
-                <label for="lastName">שם משפחה:</label>
-                <input type="text" id="lastName" required placeholder="הכנס שם משפחה">
-            </div>
-            <div class="form-group">
-                <label for="className">כיתה:</label>
-                <input type="text" id="className" required placeholder="לדוגמה: ט'5">
-            </div>
-            <button class="btn btn-primary btn-block" onclick="startQuiz()">התחל מבחן</button>
-        </div>
-
-        <!-- Quiz Section -->
-        <div id="quizSection" class="hidden">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-            </div>
-            <div id="questionsContainer"></div>
-            <button class="btn btn-primary btn-block" id="submitBtn" onclick="submitQuiz()">סיים מבחן</button>
-        </div>
-
-        <!-- Results Section -->
-        <div id="resultsSection" class="hidden">
-            <div class="card results-card">
-                <h2 style="font-size: 2.5rem; margin-bottom: 20px;">תוצאות המבחן</h2>
-                <div class="emoji" id="resultEmoji"></div>
-                <div class="score-display" id="scoreDisplay"></div>
-                <p id="scoreFeedback" style="font-size: 1.3rem; color: var(--text-secondary);"></p>
-                <div id="statusMessage"></div>
-                <button class="btn download-btn btn-block" onclick="downloadExcel()">💾 הורד תוצאות לאקסל</button>
-            </div>
-            <div class="card">
-                <h3 style="font-size: 2rem; margin-bottom: 30px; text-align: center;">סיכום מפורט</h3>
-                <div id="resultsDetails" class="results-details"></div>
-            </div>
-        </div>
+<div class="chat-container">
+    <div class="header">
+        <h1>מבחן שבוע אינטרנט בטוח - לימור</h1>
     </div>
+    
+    <div class="chat-area" id="chatArea"></div>
 
-    <script>
-        // כתובת ה-API של Google Apps Script
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwaH5L-HqgbgjSOgHBvtkxOp7Dl10Ejr2ztaeHMh81c9x5_N7t08F4jHSGsdYdby-AV/exec';
+    <div class="input-area" id="inputArea">
+        <input type="text" id="userInput" placeholder="הקלד תשובה..." autocomplete="off">
+        <button id="sendBtn" onclick="handleInput()">➤</button>
+    </div>
+</div>
 
-        const questions = [
-            {
-                question: "מהו הסיסמה החזקה ביותר?",
-                answers: [
-                    "123456",
-                    "MyName2024",
-                    "K9#mL$pQ2@vN8!wR",
-                    "Password123"
-                ],
-                correct: 2,
-                explanation: "סיסמה חזקה צריכה להכיל לפחות 12 תווים, שילוב של אותיות גדולות וקטנות, מספרים ותווים מיוחדים. הסיסמה 'K9#mL$pQ2@vN8!wR' היא הבטוחה ביותר."
-            },
-            {
-                question: "קיבלת אימייל מהבנק שמבקש ממך להזין את פרטי כרטיס האשראי. מה כדאי לעשות?",
-                answers: [
-                    "למלא את הפרטים מיד כי זה דחוף",
-                    "לשלוח את הפרטים רק אם המייל נראה רשמי",
-                    "לא למלא! בנקים אף פעם לא מבקשים מידע רגיש באימייל ולהתקשר לבנק",
-                    "לשתף את המייל עם חברים כדי לשמוע דעה"
-                ],
-                correct: 2,
-                explanation: "זהו ניסיון פישינג! בנקים ומוסדות פיננסיים לעולם לא יבקשו מידע רגיש באימייל. יש להתקשר לבנק דרך המספר הרשמי ולוודא."
-            },
-            {
-                question: "מה זה 'פישינג' (Phishing)?",
-                answers: [
-                    "משחק מחשב פופולרי",
-                    "תוכנה להגנה מפני וירוסים",
-                    "ניסיון להונאה באמצעות הסתמכות על מראה של גוף מוכר כדי לגנוב מידע אישי",
-                    "תוכנה לחיפוש קבצים במחשב"
-                ],
-                correct: 2,
-                explanation: "פישינג הוא מתקפת סייבר שבה תוקפים מתחזים לגורם מוכר (בנק, חברה) כדי לגנוב מידע אישי, סיסמאות או פרטי אשראי."
-            },
-            {
-                question: "איזה סוג קבצים מסוכן להוריד מהאינטרנט?",
-                answers: [
-                    "רק קבצי .jpg (תמונות)",
-                    "קבצי .exe, .zip, .rar ממקורות לא מוכרים",
-                    "קבצי .mp3 (מוזיקה)",
-                    "קבצי .txt (מסמכי טקסט)"
-                ],
-                correct: 1,
-                explanation: "קבצי הפעלה (.exe) וארכיונים (.zip, .rar) ממקורות לא מוכרים עלולים להכיל תוכנות זדוניות. יש להוריד קבצים רק ממקורות אמינים."
-            },
-            {
-                question: "מה זה אימות דו-שלבי (Two-Factor Authentication)?",
-                answers: [
-                    "שימוש בשתי סיסמאות שונות",
-                    "שכבת אבטחה נוספת שדורשת קוד או אישור נוסף מלבד הסיסמה",
-                    "כניסה לחשבון פעמיים ביום",
-                    "שיתוף הסיסמה עם שני אנשים"
-                ],
-                correct: 1,
-                explanation: "אימות דו-שלבי מוסיף שכבת הגנה נוספת - מלבד הסיסמה, נדרש קוד שנשלח לטלפון או אישור באפליקציה, מה שמקשה על האקרים להיכנס לחשבון."
-            },
-            {
-                question: "האם בטוח להתחבר לרשת WiFi ציבורית במקומות כמו בתי קפה?",
-                answers: [
-                    "כן, זה תמיד בטוח לחלוטין",
-                    "כן, אם הרשת מוגנת בסיסמה",
-                    "לא בטוח - רשתות ציבוריות מאפשרות גישה למידע שלך, כדאי להשתמש ב-VPN",
-                    "זה בטוח רק בימי שישי"
-                ],
-                correct: 2,
-                explanation: "רשתות WiFi ציבוריות אינן מאובטחות ותוקפים יכולים ליירט מידע. מומלץ להשתמש ב-VPN או להימנע מפעילויות רגישות ברשתות אלה."
-            },
-            {
-                question: "מה כדאי לעשות עם עדכוני תוכנה שהמערכת מבקשת להתקין?",
-                answers: [
-                    "להתעלם מהם כי הם מעצבנים",
-                    "להתקין רק פעם בשנה",
-                    "להתקין מיד - עדכונים מכילים תיקוני אבטחה חשובים",
-                    "לבקש מחבר להתקין בשבילי"
-                ],
-                correct: 2,
-                explanation: "עדכוני תוכנה חשובים מאוד! הם מכילים תיקוני אבטחה שסוגרים פרצות אבטחה שהאקרים עלולים לנצל. יש להתקין עדכונים כשהם זמינים."
-            },
-            {
-                question: "מישהו שאתה לא מכיר ביקש ממך להוסיף אותו כחבר ברשת חברתית ושלח קישור. מה תעשה?",
-                answers: [
-                    "אלחץ על הקישור מיד כי אני סקרן",
-                    "אשתף את הקישור עם כולם",
-                    "לא אלחץ ואחסום - זה יכול להיות ניסיון התקפה או גניבת מידע",
-                    "אכנס לקישור רק אם יש תמונת פרופיל יפה"
-                ],
-                correct: 2,
-                explanation: "אנשים לא מוכרים ברשתות חברתיות עלולים להיות בוטים או תוקפים. אל תלחץ על קישורים מזרים ואל תקבל בקשות חברות ממי שאינך מכיר."
-            },
-            {
-                question: "מהי דרך בטוחה לשמור סיסמאות?",
-                answers: [
-                    "לכתוב אותן על פתק ליד המחשב",
-                    "לשתף אותן עם חברים למקרה ששכחתי",
-                    "להשתמש במנהל סיסמאות (Password Manager) מאובטח",
-                    "להשתמש באותה סיסמה לכל האתרים כדי לא לשכוח"
-                ],
-                correct: 2,
-                explanation: "מנהל סיסמאות הוא הדרך הבטוחה ביותר - הוא מאחסן סיסמאות בצורה מוצפנת ומאפשר שימוש בסיסמאות שונות וחזקות לכל אתר."
-            },
-            {
-                question: "מה זו הנדסה חברתית (Social Engineering)?",
-                answers: [
-                    "בניית גשרים ובניינים",
-                    "טכניקת מניפולציה פסיכולוגית לגרום לאנשים לחשוף מידע סודי",
-                    "תכנות אתרי אינטרנט",
-                    "ניהול קבוצות בפייסבוק"
-                ],
-                correct: 1,
-                explanation: "הנדסה חברתית היא טכניקה שבה תוקפים משתמשים במניפולציה פסיכולוגית ובמהנדסות אמון כדי לגרום לאנשים לחשוף מידע סודי או לבצע פעולות מסוכנות."
-            }
-        ];
+<script>
+    // 1. הגדרת כתובת ה-Script המעודכנת
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBnwXomWLlIMwyIP6RTRBrRFFlPUcg_QQaAc-Gchry4m3qCKmh4SG1i61fJVAOIs6cNQ/exec"; 
 
-        let studentData = {};
-        let userAnswers = [];
-        let startTime;
+    // 2. השאלות למבחן
+    const questions = [
+        {
+            id: 1,
+            text: "מה עושים כשמקבלים הודעה מחשידה מאדם לא מוכר?",
+            type: "choice",
+            options: ["עונים לו", "חוסמים ומדווחים", "שולחים לחברים", "פותחים את הלינק"],
+            correctAnswer: "חוסמים ומדווחים"
+        },
+        {
+            id: 2,
+            text: "האם מותר למסור סיסמה אישית לחבר הכי טוב?",
+            type: "choice",
+            options: ["כן", "לא"],
+            correctAnswer: "לא"
+        },
+        {
+            id: 3,
+            text: "מהו המוקד הטלפוני לסיוע במקרה של פגיעה ברשת?",
+            type: "text",
+            correctAnswer: "105"
+        }
+    ];
 
-        function startQuiz() {
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const className = document.getElementById('className').value.trim();
+    let currentStep = 0; 
+    let studentName = "";
+    let score = 0;
+    let answersLog = [];
+    const chatArea = document.getElementById('chatArea');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
 
-            if (!firstName || !lastName || !className) {
-                alert('אנא מלא את כל השדות');
-                return;
-            }
+    window.onload = () => {
+        addMessage("bot", "שלום! ברוכים הבאים למבחן שבוע אינטרנט בטוח. נתחיל בזה שתגידו לי מה שמכם?");
+    };
 
-            studentData = {
-                firstName,
-                lastName,
-                className,
-                date: new Date().toLocaleDateString('he-IL'),
-                time: new Date().toLocaleTimeString('he-IL')
-            };
+    function addMessage(sender, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message');
+        msgDiv.classList.add(sender === 'bot' ? 'bot-message' : 'user-message');
+        msgDiv.innerText = text;
+        chatArea.appendChild(msgDiv);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
 
-            document.getElementById('studentForm').classList.add('hidden');
-            document.getElementById('quizSection').classList.remove('hidden');
+    function handleInput() {
+        const text = userInput.value.trim();
+        if (!text) return;
+        addMessage("user", text);
+        userInput.value = "";
+        processResponse(text);
+    }
+
+    userInput.addEventListener("keypress", (e) => { if (e.key === "Enter") handleInput(); });
+
+    function processResponse(response) {
+        if (currentStep === 0) {
+            studentName = response;
+            addMessage("bot", `יופי ${studentName}, בואו נתחיל בשאלות!`);
+            currentStep++;
+            askQuestion();
+        } else {
+            const currentQ = questions[currentStep - 1];
+            let isCorrect = (response.trim() === currentQ.correctAnswer);
+            if (isCorrect) score += 33.3; // ניקוד יחסי ל-3 שאלות
+
+            answersLog.push({ q: currentQ.text, a: response, correct: isCorrect });
+            currentStep++;
             
-            renderQuestions();
-            startTime = new Date();
-            updateProgress();
-        }
-
-        function renderQuestions() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-
-            questions.forEach((q, index) => {
-                const questionCard = document.createElement('div');
-                questionCard.className = 'card question-card';
-                questionCard.style.animationDelay = `${index * 0.1}s`;
-                
-                questionCard.innerHTML = `
-                    <div class="question-header">
-                        <div class="question-number">${index + 1}</div>
-                        <div class="question-text">${q.question}</div>
-                    </div>
-                    <div class="answers">
-                        ${q.answers.map((answer, i) => `
-                            <div class="answer-option">
-                                <input type="radio" name="q${index}" id="q${index}_a${i}" value="${i}" onchange="updateProgress()">
-                                <label class="answer-label" for="q${index}_a${i}">
-                                    ${answer}
-                                </label>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                
-                container.appendChild(questionCard);
-            });
-        }
-
-        function updateProgress() {
-            const answered = questions.filter((_, i) => 
-                document.querySelector(`input[name="q${i}"]:checked`)
-            ).length;
-            const progress = (answered / questions.length) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
-        }
-
-        async function submitQuiz() {
-            userAnswers = [];
-            let allAnswered = true;
-
-            questions.forEach((q, index) => {
-                const selected = document.querySelector(`input[name="q${index}"]:checked`);
-                if (!selected) {
-                    allAnswered = false;
-                } else {
-                    userAnswers.push(parseInt(selected.value));
-                }
-            });
-
-            if (!allAnswered) {
-                alert('אנא ענה על כל השאלות לפני הגשת המבחן');
-                return;
-            }
-
-            // חישוב ציון
-            let correctCount = 0;
-            questions.forEach((q, index) => {
-                if (userAnswers[index] === q.correct) correctCount++;
-            });
-            const score = Math.round((correctCount / questions.length) * 100);
-
-            studentData.score = score;
-            studentData.correctCount = correctCount;
-            studentData.totalQuestions = questions.length;
-            studentData.answers = userAnswers;
-
-            // הצגת תוצאות
-            showResults();
-
-            // שמירה ל-Google Sheets
-            await saveToGoogleSheets();
-        }
-
-        async function saveToGoogleSheets() {
-            const statusDiv = document.getElementById('statusMessage');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            statusDiv.innerHTML = '<div class="status-message info">⏳ שומר תוצאות ל-Google Sheets...</div>';
-            submitBtn.disabled = true;
-
-            try {
-                console.log('Sending data to Google Sheets:', studentData);
-                
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'text/plain',
-                    },
-                    body: JSON.stringify(studentData)
-                });
-
-                console.log('Response received:', response);
-                
-                // ניסיון לקרוא את התשובה
-                try {
-                    const result = await response.text();
-                    console.log('Response text:', result);
-                    statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשמרו בהצלחה ב-Google Sheets!</div>';
-                } catch (e) {
-                    // אם לא הצלחנו לקרוא תשובה, זה בסדר - הנתונים כנראה נשלחו
-                    statusDiv.innerHTML = '<div class="status-message success">✅ התוצאות נשלחו (ייתכן שנשמרו).<br/>אנא בדקי בגיליון Google Sheets.</div>';
-                }
-                
-            } catch (error) {
-                console.error('Error saving to Google Sheets:', error);
-                statusDiv.innerHTML = '<div class="status-message error">❌ שגיאה בשמירה: ' + error.message + '<br/>אנא הורד את קובץ האקסל.</div>';
-            } finally {
-                submitBtn.disabled = false;
-            }
-        }
-
-        function showResults() {
-            document.getElementById('quizSection').classList.add('hidden');
-            document.getElementById('resultsSection').classList.remove('hidden');
-
-            const resultsHTML = [];
-
-            questions.forEach((q, index) => {
-                const userAnswer = userAnswers[index];
-                const isCorrect = userAnswer === q.correct;
-
-                resultsHTML.push(`
-                    <div class="result-item ${isCorrect ? 'correct' : 'incorrect'}">
-                        <div class="result-question">
-                            ${isCorrect ? '✅' : '❌'} שאלה ${index + 1}: ${q.question}
-                        </div>
-                        <div class="result-answer your-answer">
-                            התשובה שלך: ${q.answers[userAnswer]}
-                        </div>
-                        ${!isCorrect ? `
-                            <div class="result-answer correct-answer">
-                                התשובה הנכונה: ${q.answers[q.correct]}
-                            </div>
-                            <div class="explanation">
-                                💡 ${q.explanation}
-                            </div>
-                        ` : ''}
-                    </div>
-                `);
-            });
-
-            const score = studentData.score;
-            document.getElementById('scoreDisplay').textContent = `${score}%`;
-            
-            let emoji, feedback;
-            if (score >= 90) {
-                emoji = '🏆';
-                feedback = 'מעולה! אתה מומחה לגלישה בטוחה!';
-            } else if (score >= 70) {
-                emoji = '🌟';
-                feedback = 'כל הכבוד! יש לך ידע טוב, אבל יש מקום לשיפור.';
-            } else if (score >= 50) {
-                emoji = '📚';
-                feedback = 'לא רע, אבל כדאי ללמוד עוד על אבטחת מידע.';
+            if (currentStep <= questions.length) {
+                askQuestion();
             } else {
-                emoji = '💪';
-                feedback = 'צריך לשפר! חשוב מאוד ללמוד על גלישה בטוחה.';
+                finishQuiz();
             }
-
-            document.getElementById('resultEmoji').textContent = emoji;
-            document.getElementById('scoreFeedback').textContent = feedback;
-            document.getElementById('resultsDetails').innerHTML = resultsHTML.join('');
         }
+    }
 
-        function downloadExcel() {
-            const data = [];
-            
-            // Create header row
-            const headers = [
-                'שם פרטי',
-                'שם משפחה',
-                'כיתה',
-                'תאריך',
-                'שעה',
-                'ציון',
-                'תשובות נכונות',
-                'סה״כ שאלות'
-            ];
-            
-            // Add question columns
-            questions.forEach((q, i) => {
-                headers.push(`שאלה ${i + 1}`);
-                headers.push(`תשובת התלמיד ${i + 1}`);
-                headers.push(`תשובה נכונה ${i + 1}`);
-                headers.push(`האם נכון ${i + 1}`);
-                headers.push(`הסבר ${i + 1}`);
-            });
+    function askQuestion() {
+        const q = questions[currentStep - 1];
+        setTimeout(() => {
+            addMessage("bot", q.text);
+            if (q.type === "choice") {
+                renderOptions(q.options);
+                userInput.style.display = 'none';
+                sendBtn.style.display = 'none';
+            } else {
+                userInput.style.display = 'block';
+                sendBtn.style.display = 'block';
+                userInput.focus();
+            }
+        }, 600);
+    }
 
-            data.push(headers);
+    function renderOptions(options) {
+        const container = document.createElement('div');
+        container.classList.add('options-container');
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.classList.add('option-btn');
+            btn.innerText = opt;
+            btn.onclick = () => {
+                container.remove();
+                addMessage("user", opt);
+                userInput.style.display = 'block';
+                sendBtn.style.display = 'block';
+                processResponse(opt);
+            };
+            container.appendChild(btn);
+        });
+        chatArea.appendChild(container);
+        chatArea.scrollTop = chatArea.scrollHeight;
+    }
 
-            // Create data row
-            const row = [
-                studentData.firstName,
-                studentData.lastName,
-                studentData.className,
-                studentData.date,
-                studentData.time,
-                studentData.score + '%',
-                studentData.correctCount,
-                studentData.totalQuestions
-            ];
+    function finishQuiz() {
+        addMessage("bot", "כל הכבוד! סיימת את המבחן. הנתונים נשלחים כעת למורה.");
+        
+        const data = {
+            studentName: studentName,
+            score: Math.round(score),
+            answers: JSON.stringify(answersLog)
+        };
 
-            questions.forEach((q, index) => {
-                const userAnswer = userAnswers[index];
-                const isCorrect = userAnswer === q.correct;
-                
-                row.push(q.question);
-                row.push(q.answers[userAnswer]);
-                row.push(q.answers[q.correct]);
-                row.push(isCorrect ? 'נכון' : 'לא נכון');
-                row.push(isCorrect ? '' : q.explanation);
-            });
-
-            data.push(row);
-
-            // Create workbook and worksheet
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet(data);
-
-            // Set column widths
-            ws['!cols'] = [
-                { wch: 15 }, { wch: 15 }, { wch: 10 }, { wch: 12 }, { wch: 10 },
-                { wch: 8 }, { wch: 12 }, { wch: 12 }
-            ];
-            
-            questions.forEach(() => {
-                ws['!cols'].push({ wch: 40 }); // Question
-                ws['!cols'].push({ wch: 30 }); // User answer
-                ws['!cols'].push({ wch: 30 }); // Correct answer
-                ws['!cols'].push({ wch: 10 }); // Is correct
-                ws['!cols'].push({ wch: 50 }); // Explanation
-            });
-
-            XLSX.utils.book_append_sheet(wb, ws, 'תוצאות מבחן');
-
-            // Generate filename
-            const fileName = `מבחן_גלישה_בטוחה_${studentData.firstName}_${studentData.lastName}_${new Date().getTime()}.xlsx`;
-            
-            // Save file
-            XLSX.writeFile(wb, fileName);
-        }
-    </script>
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data)
+        }).then(() => {
+            addMessage("bot", "הנתונים נשמרו בגיליון בהצלחה. להתראות!");
+        }).catch(err => {
+            console.error("Error sending data:", err);
+            addMessage("bot", "חלה שגיאה בשמירת הנתונים.");
+        });
+    }
+</script>
 </body>
 </html>
