@@ -55,8 +55,9 @@
         .input-group {
             margin-bottom: 30px;
             background: var(--secondary-color);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
+            border: 1px solid #cfe2ff;
         }
 
         label {
@@ -92,6 +93,7 @@
 
         .question-card:hover {
             border-color: var(--accent-color);
+            background-color: #fcfdfe;
         }
 
         .question-text {
@@ -99,6 +101,7 @@
             margin-bottom: 15px;
             font-size: 18px;
             display: block;
+            color: var(--primary-color);
         }
 
         .options {
@@ -195,7 +198,7 @@
         </div>
 
         <div id="questionsContainer">
-            <!-- השאלות מהקישור ייוצרו כאן -->
+            <!-- Questions injected via JS -->
         </div>
 
         <button id="submitBtn" onclick="submitQuiz()">הגשת המבחן</button>
@@ -211,6 +214,7 @@
 </div>
 
 <script>
+    // הקישור לסקריפט הגוגל שלך
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBnwXomWLlIMwyIP6RTRBrRFFlPUcg_QQaAc-Gchry4m3qCKmh4SG1i61fJVAOIs6cNQ/exec"; 
 
     const questions = [
@@ -310,9 +314,12 @@
     }
 
     async function submitQuiz() {
-        const name = document.getElementById('studentName').value.trim();
+        const nameInput = document.getElementById('studentName');
+        const name = nameInput.value.trim();
+        
         if (!name) {
             alert("נא להזין שם מלא לפני ההגשה.");
+            nameInput.focus();
             return;
         }
 
@@ -336,9 +343,8 @@
             if (!confirm("לא ענית על כל השאלות. האם להגיש בכל זאת?")) return;
         }
 
-        // שינוי כפתור למצב טעינה
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "שומר נתונים...";
+        btn.innerText = "שומר נתונים בגיליון...";
         btn.disabled = true;
 
         const data = {
@@ -358,7 +364,8 @@
             document.getElementById('resultArea').style.display = 'block';
             document.getElementById('scoreDisplay').innerText = score;
         } catch (error) {
-            alert("שגיאה בתקשורת. הנתונים לא נשמרו.");
+            console.error(error);
+            alert("חלה שגיאה בחיבור. הנתונים לא נשמרו.");
             btn.innerText = "הגשת המבחן";
             btn.disabled = false;
         }
