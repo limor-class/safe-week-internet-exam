@@ -214,8 +214,8 @@
 </div>
 
 <script>
-    // כתובת ה-URL המעודכנת מה-Apps Script שלך
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-ealY798e5zqKlHa8l-DM1-uh81Tr1g9uX7EerqtW_EsFKRh3yBMjcmNQUy3RkXeYjA/exec"; 
+    // הקישור החדש ששלחת הוטמע כאן
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXwmVQLxH0qjaA4dsZ3NHBTRtk_upy-wo2tfYZFumkRKoJ5rtGi7XSDQSjRqy9WSQd4A/exec"; 
 
     const questions = [
         { id: 1, text: "קיבלת הודעה מאדם שאתה לא מכיר שמבקש את מספר הטלפון שלך. מה תעשה?", options: ["אתן לו, אולי נהיה חברים", "לא אענה ואחסום אותו", "אשאל אותו למה הוא צריך", "אתן לו מספר לא נכון"], correctAnswer: "לא אענה ואחסום אותו" },
@@ -259,6 +259,8 @@
                 const val = selected.value;
                 if (val === q.correctAnswer) score += 10;
                 results.push({ q: q.text, a: val });
+            } else {
+                results.push({ q: q.text, a: "לא נענה" });
             }
         });
 
