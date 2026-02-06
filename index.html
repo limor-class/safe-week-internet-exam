@@ -214,8 +214,8 @@
 </div>
 
 <script>
-    // הקישור החדש ששלחת הוטמע כאן
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXwmVQLxH0qjaA4dsZ3NHBTRtk_upy-wo2tfYZFumkRKoJ5rtGi7XSDQSjRqy9WSQd4A/exec"; 
+    // הקישור המעודכן שהדבקת:
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-Fz0IXDafL1Mc5VcSccd7CMt5fI-O-9og9MhuXoEykrlXOASl_XRw-p_eakELuyE8XQ/exec"; 
 
     const questions = [
         { id: 1, text: "קיבלת הודעה מאדם שאתה לא מכיר שמבקש את מספר הטלפון שלך. מה תעשה?", options: ["אתן לו, אולי נהיה חברים", "לא אענה ואחסום אותו", "אשאל אותו למה הוא צריך", "אתן לו מספר לא נכון"], correctAnswer: "לא אענה ואחסום אותו" },
@@ -247,7 +247,7 @@
         });
     }
 
-    async function submitQuiz() {
+    function submitQuiz() {
         const name = document.getElementById('studentName').value.trim();
         if (!name) { alert("נא להזין שם מלא"); return; }
 
@@ -268,19 +268,29 @@
         btn.innerText = "שומר...";
         btn.disabled = true;
 
-        try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ studentName: name, score: score, answers: JSON.stringify(results) })
-            });
+        // שליחה כטקסט פשוט כדי לעקוף חסימות אבטחה של גוגל
+        const payload = JSON.stringify({
+            studentName: name,
+            score: score,
+            answers: JSON.stringify(results)
+        });
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: payload
+        }).then(() => {
             document.getElementById('quizForm').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
             document.getElementById('scoreDisplay').innerText = score;
-        } catch (error) {
-            alert("שגיאה בשמירה");
+        }).catch(err => {
+            console.error(err);
+            alert("הייתה בעיה בשליחה, אך ייתכן שהנתונים נשמרו. נסי לרענן ולבדוק.");
             btn.disabled = false;
-        }
+        });
     }
     window.onload = initQuiz;
 </script>
