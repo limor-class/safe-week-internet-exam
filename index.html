@@ -214,80 +214,20 @@
 </div>
 
 <script>
-    // הקישור לסקריפט הגוגל שלך
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBnwXomWLlIMwyIP6RTRBrRFFlPUcg_QQaAc-Gchry4m3qCKmh4SG1i61fJVAOIs6cNQ/exec"; 
+    // כתובת ה-URL המעודכנת מה-Apps Script שלך
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-ealY798e5zqKlHa8l-DM1-uh81Tr1g9uX7EerqtW_EsFKRh3yBMjcmNQUy3RkXeYjA/exec"; 
 
     const questions = [
-        {
-            id: 1,
-            text: "קיבלת הודעה מאדם שאתה לא מכיר שמבקש את מספר הטלפון שלך. מה תעשה?",
-            type: "choice",
-            options: ["אתן לו, אולי נהיה חברים", "לא אענה ואחסום אותו", "אשאל אותו למה הוא צריך", "אתן לו מספר לא נכון"],
-            correctAnswer: "לא אענה ואחסום אותו"
-        },
-        {
-            id: 2,
-            text: "האם מותר לשתף סיסמאות של משחקים או רשתות חברתיות עם חברים?",
-            type: "choice",
-            options: ["כן, הם חברים טובים שלי", "רק אם הם מבטיחים לא לגלות", "לא, סיסמה היא אישית וסודית", "כן, כדי שהם יוכלו לעזור לי בשלבים"],
-            correctAnswer: "לא, סיסמה היא אישית וסודית"
-        },
-        {
-            id: 3,
-            text: "מהו מוקד 105?",
-            type: "choice",
-            options: ["מוקד הזמנת פיצה", "המוקד הלאומי להגנה על ילדים ברשת", "מוקד תקלות אינטרנט", "מוקד מידע על טיולים"],
-            correctAnswer: "המוקד הלאומי להגנה על ילדים ברשת"
-        },
-        {
-            id: 4,
-            text: "ראית שמישהו כותב דברים מעליבים על חבר לכיתה בקבוצת הווטסאפ. מה הכי נכון לעשות?",
-            type: "choice",
-            options: ["לצחוק יחד עם כולם", "לא להתערב בכלל", "לצאת מהקבוצה", "לדווח למבוגר ולתמוך בחבר"],
-            correctAnswer: "לדווח למבוגר ולתמוך בחבר"
-        },
-        {
-            id: 5,
-            text: "מישהו שפגשת במשחק רשת מציע להיפגש במציאות. מה תעשה?",
-            type: "choice",
-            options: ["אלך להיפגש איתו, זה נשמע כיף", "אלך רק אם הוא יביא לי מתנה", "אסרב ואספר מיד להורים", "אקבע איתו במקום הומה אדם לבד"],
-            correctAnswer: "אסרב ואספר מיד להורים"
-        },
-        {
-            id: 6,
-            text: "קיבלת קישור בהודעה שמבטיח 'פרס גדול' אם תלחץ עליו. מה תעשה?",
-            type: "choice",
-            options: ["אלחץ מיד, אני רוצה פרס", "אשלח לכל החברים שלי", "אמחוק את ההודעה בלי ללחוץ", "אמלא את הפרטים האישיים שלי"],
-            correctAnswer: "אמחוק את ההודעה בלי ללחוץ"
-        },
-        {
-            id: 7,
-            text: "מהי 'בריונות ברשת'?",
-            type: "choice",
-            options: ["משחק מחשב חדש", "גלישה מהירה מאוד", "פגיעה, העלבה או החרמה של מישהו דרך האינטרנט", "תיקון מחשבים"],
-            correctAnswer: "פגיעה, העלבה או החרמה של מישהו דרך האינטרנט"
-        },
-        {
-            id: 8,
-            text: "איזו סיסמה נחשבת לחזקה יותר?",
-            type: "choice",
-            options: ["123456", "השם שלי", "תאריך היומולדת שלי", "שילוב של אותיות, מספרים וסימנים"],
-            correctAnswer: "שילוב של אותיות, מספרים וסימנים"
-        },
-        {
-            id: 9,
-            text: "האם מותר להעלות תמונה של חבר בלי לשאול אותו?",
-            type: "choice",
-            options: ["כן, אם התמונה יפה", "כן, הוא חבר שלי", "לא, צריך לבקש רשות תמיד", "רק אם הוא לא יראה"],
-            correctAnswer: "לא, צריך לבקש רשות תמיד"
-        },
-        {
-            id: 10,
-            text: "מה עדיף לעשות אם הרגשת חוסר נוחות או פחד בזמן הגלישה?",
-            type: "choice",
-            options: ["לסגור את המחשב ולשתוק", "לספר למבוגר שאני סומך עליו", "להמשיך לגלוש כרגיל", "לנסות לפתור את זה לבד"],
-            correctAnswer: "לספר למבוגר שאני סומך עליו"
-        }
+        { id: 1, text: "קיבלת הודעה מאדם שאתה לא מכיר שמבקש את מספר הטלפון שלך. מה תעשה?", options: ["אתן לו, אולי נהיה חברים", "לא אענה ואחסום אותו", "אשאל אותו למה הוא צריך", "אתן לו מספר לא נכון"], correctAnswer: "לא אענה ואחסום אותו" },
+        { id: 2, text: "האם מותר לשתף סיסמאות של משחקים או רשתות חברתיות עם חברים?", options: ["כן, הם חברים טובים שלי", "רק אם הם מבטיחים לא לגלות", "לא, סיסמה היא אישית וסודית", "כן, כדי שהם יוכלו לעזור לי בשלבים"], correctAnswer: "לא, סיסמה היא אישית וסודית" },
+        { id: 3, text: "מהו מוקד 105?", options: ["מוקד הזמנת פיצה", "המוקד הלאומי להגנה על ילדים ברשת", "מוקד תקלות אינטרנט", "מוקד מידע על טיולים"], correctAnswer: "המוקד הלאומי להגנה על ילדים ברשת" },
+        { id: 4, text: "ראית שמישהו כותב דברים מעליבים על חבר לכיתה בקבוצת הווטסאפ. מה הכי נכון לעשות?", options: ["לצחוק יחד עם כולם", "לא להתערב בכלל", "לצאת מהקבוצה", "לדווח למבוגר ולתמוך בחבר"], correctAnswer: "לדווח למבוגר ולתמוך בחבר" },
+        { id: 5, text: "מישהו שפגשת במשחק רשת מציע להיפגש במציאות. מה תעשה?", options: ["אלך להיפגש איתו, זה נשמע כיף", "אלך רק אם הוא יביא לי מתנה", "אסרב ואספר מיד להורים", "אקבע איתו במקום הומה אדם לבד"], correctAnswer: "אסרב ואספר מיד להורים" },
+        { id: 6, text: "קיבלת קישור בהודעה שמבטיח 'פרס גדול' אם תלחץ עליו. מה תעשה?", options: ["אלחץ מיד, אני רוצה פרס", "אשלח לכל החברים שלי", "אמחוק את ההודעה בלי ללחוץ", "אמלא את הפרטים האישיים שלי"], correctAnswer: "אמחוק את ההודעה בלי ללחוץ" },
+        { id: 7, text: "מהי 'בריונות ברשת'?", options: ["משחק מחשב חדש", "גלישה מהירה מאוד", "פגיעה, העלבה או החרמה של מישהו דרך האינטרנט", "תיקון מחשבים"], correctAnswer: "פגיעה, העלבה או החרמה של מישהו דרך האינטרנט" },
+        { id: 8, text: "איזו סיסמה נחשבת לחזקה יותר?", options: ["123456", "השם שלי", "תאריך היומולדת שלי", "שילוב של אותיות, מספרים וסימנים"], correctAnswer: "שילוב של אותיות, מספרים וסימנים" },
+        { id: 9, text: "האם מותר להעלות תמונה של חבר בלי לשאול אותו?", options: ["כן, אם התמונה יפה", "כן, הוא חבר שלי", "לא, צריך לבקש רשות תמיד", "רק אם הוא לא יראה"], correctAnswer: "לא, צריך לבקש רשות תמיד" },
+        { id: 10, text: "מה עדיף לעשות אם הרגשת חוסר נוחות או פחד בזמן הגלישה?", options: ["לסגור את המחשב ולשתוק", "לספר למבוגר שאני סומך עליו", "להמשיך לגלוש כרגיל", "לנסות לפתור את זה לבד"], correctAnswer: "לספר למבוגר שאני סומך עליו" }
     ];
 
     function initQuiz() {
@@ -295,82 +235,51 @@
         questions.forEach((q, index) => {
             const card = document.createElement('div');
             card.className = 'question-card';
-            card.innerHTML = `<span class="question-text">${index + 1}. ${q.text}</span>`;
-            
-            const optionsDiv = document.createElement('div');
-            optionsDiv.className = 'options';
+            card.innerHTML = `<span class="question-text">${index + 1}. ${q.text}</span><div class="options"></div>`;
+            const optionsDiv = card.querySelector('.options');
             q.options.forEach(opt => {
                 const label = document.createElement('label');
                 label.className = 'option-item';
-                label.innerHTML = `
-                    <input type="radio" name="q${q.id}" value="${opt}">
-                    <span>${opt}</span>
-                `;
+                label.innerHTML = `<input type="radio" name="q${q.id}" value="${opt}"><span>${opt}</span>`;
                 optionsDiv.appendChild(label);
             });
-            card.appendChild(optionsDiv);
             container.appendChild(card);
         });
     }
 
     async function submitQuiz() {
-        const nameInput = document.getElementById('studentName');
-        const name = nameInput.value.trim();
-        
-        if (!name) {
-            alert("נא להזין שם מלא לפני ההגשה.");
-            nameInput.focus();
-            return;
-        }
+        const name = document.getElementById('studentName').value.trim();
+        if (!name) { alert("נא להזין שם מלא"); return; }
 
         let score = 0;
         let results = [];
-        let allAnswered = true;
-
         questions.forEach(q => {
             const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
-            if (!selected) {
-                allAnswered = false;
-            } else {
+            if (selected) {
                 const val = selected.value;
-                const correct = val === q.correctAnswer;
-                if (correct) score += 10;
-                results.push({ q: q.text, a: val, correct: correct });
+                if (val === q.correctAnswer) score += 10;
+                results.push({ q: q.text, a: val });
             }
         });
 
-        if (!allAnswered) {
-            if (!confirm("לא ענית על כל השאלות. האם להגיש בכל זאת?")) return;
-        }
-
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "שומר נתונים בגיליון...";
+        btn.innerText = "שומר...";
         btn.disabled = true;
-
-        const data = {
-            studentName: name,
-            score: score,
-            answers: JSON.stringify(results)
-        };
 
         try {
             await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: JSON.stringify(data)
+                body: JSON.stringify({ studentName: name, score: score, answers: JSON.stringify(results) })
             });
-
             document.getElementById('quizForm').style.display = 'none';
             document.getElementById('resultArea').style.display = 'block';
             document.getElementById('scoreDisplay').innerText = score;
         } catch (error) {
-            console.error(error);
-            alert("חלה שגיאה בחיבור. הנתונים לא נשמרו.");
-            btn.innerText = "הגשת המבחן";
+            alert("שגיאה בשמירה");
             btn.disabled = false;
         }
     }
-
     window.onload = initQuiz;
 </script>
 </body>
